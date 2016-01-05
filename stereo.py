@@ -232,8 +232,7 @@ def nextfilename(guess):
     '''Make a new filename, incrementing the number if need be.'''
     g = glob.glob(guess)
 
-s = Stereo('couchtest/left.jpg','couchtest/right.jpg')
-
+#s = Stereo('couchtest/left.jpg','couchtest/right.jpg')
 if __name__ == '__main__':
     s = Stereo(sys.argv[1], sys.argv[2])
     s.adjust()
