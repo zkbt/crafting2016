@@ -1,5 +1,5 @@
 # craftroom
-Various tools for crafting the cosmos! These are currently associated with a course being taught for MIT's 2016 Independent Activities Period. You can read more about the course [here](bit.ly/craftingcosmos).
+Various tools for crafting the cosmos! These are currently associated with a course being taught for MIT's 2016 Independent Activities Period. You can read more about the course [here](http://bit.ly/craftingcosmos).
 
 Items included so far:
 
