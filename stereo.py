@@ -117,12 +117,12 @@ class Stereo(object):
     def load(self, leftFilename, rightFilename):
         '''Load in images for the left and right eyes, and store them.'''
 
-        print 'Reading input images.'
+        print ' Reading input images.'
         self.filenames = dict(left=leftFilename, right=rightFilename)
 
         # loop over the eyes, loading the image for each
         for k in ['left', 'right']:
-            print " loading {eye} eye's image from {filename}".format(eye=k, filename=self.filenames[k])
+            print "  loading {eye} eye's image from {filename}".format(eye=k, filename=self.filenames[k])
             # store images in self.left and self.right
             self.__dict__[k] = Image.open(self.filenames[k])
             print "   success!"
@@ -142,6 +142,7 @@ class Stereo(object):
             plt.setp(ax.get_yticklabels(), visible=False)
             plt.setp(ax.get_xticklabels(), visible=False)
         print " Please click the same feature in boths images."
+        print "  (the images will be aligned to match up on this feature, to draw the viewer's focus)"
         self.referencepoints = {}
         while(len(self.referencepoints.keys())<2):
             click = self.iplot.getMouseClicks(1)[0]
@@ -153,7 +154,7 @@ class Stereo(object):
             #self.iplot.axes[whicheye].scatter(*self.referencepoints[whicheye], s=50)
         nudgex, nudgey = self.referencepoints['right']-self.referencepoints['left']
 
-        print  "Applying a nudge of {0} pixels between the two images.".format((nudgex,nudgey))
+        print  " Applying a nudge of {0} pixels between the two images.".format((nudgex,nudgey))
         left, right = np.array(self.left), np.array(self.right)
         if nudgex > 0:
             left = left[:,:-nudgex]
@@ -179,7 +180,7 @@ class Stereo(object):
         while(os.path.exists(self.filename(i))):
             i += 1
         self.combined.save(self.filename(i))
-        print "   ...saved to {0}".format(self.filename(i))
+        print "   saved to {0}".format(self.filename(i))
 
 class SideBySide(Stereo):
     '''A stereoscopic image object, where images are shown side-by-side.'''
@@ -190,14 +191,14 @@ class SideBySide(Stereo):
     def display(self):
         '''Output the stereo image.'''
 
-        print "Saving stero image in side-by-side format."
+        print " Saving stero image in side-by-side format."
 
         # convert images to arrays, but keep them as colors (width x height x 3)
         left = np.array(self.left)
         right = np.array(self.right)
 
         # construct a comined image by stacking the images side by side
-        self.combined = Image.fromarray(np.vstack([left,right]))
+        self.combined = Image.fromarray(np.hstack([left,right]))
 
         # output the image
         self.save()
@@ -212,7 +213,7 @@ class Anaglyph(Stereo):
     def display(self):
         '''Output the stereo image.'''
 
-        print "Saving stero image in red-blue (anaglyph) format."
+        print " Saving stero image in red-blue (anaglyph) format."
 
         # first convert images to black and white (width x height)
         left = np.array(self.left.convert('L'))
@@ -233,9 +234,13 @@ def nextfilename(guess):
     '''Make a new filename, incrementing the number if need be.'''
     g = glob.glob(guess)
 
+
 #s = Stereo('couchtest/left.jpg','couchtest/right.jpg')
 if __name__ == '__main__':
 
+    print ""
+
+    # parse the input options
     parser = optparse.OptionParser(usage = """
     ./stereo.py [options] left_image right_image
 
@@ -255,10 +260,8 @@ Options:
                         (e.g. "./stereo.py leftimage.jpg rightimage.jpg")
                         """.format(len(args)))
 
-    print options.automatic
-
-
     # create the stereo image
+    print "Creating a stereo image from your two input images!"
     s = Stereo(*args)
 
 
@@ -273,3 +276,5 @@ Options:
     # create a blue-red image
     a = Anaglyph(s)
     a.display()
+
+    print "Done! Put on your glasses and check out your stereogram!"
